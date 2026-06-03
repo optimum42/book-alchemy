@@ -1,76 +1,61 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Add a Book</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
+{% extends "base.html" %}
 
-    <nav class="bg-indigo-600 text-white shadow-md">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-        <h1 class="text-2xl font-bold tracking-tight">📚 My Digital Library</h1>
-        <div class="flex gap-4">
-          <a href="/" class="bg-indigo-500 hover:bg-indigo-400 px-4 py-2 rounded transition-colors text-sm font-medium">← Back to Library</a>
-        </div>
+{% block title %}Add a Book{% endblock %}
+
+{% block content %}
+
+<main class="flex-grow flex items-center justify-center p-4 py-12">
+  <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 w-full max-w-lg">
+
+    <h2 class="text-2xl font-bold text-slate-900 mb-6 text-center">Add a New Book</h2>
+
+    {% if message %}
+      <div class="mb-6 bg-emerald-100 border-l-4 border-emerald-500 text-emerald-800 p-4 rounded shadow-sm" role="alert">
+        <p>{{ message }}</p>
       </div>
-    </nav>
+    {% endif %}
 
-    <main class="flex-grow flex items-center justify-center p-4 py-12">
-      <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 w-full max-w-lg">
+    <form action="/add_book" method="POST" class="space-y-5">
 
-        <h2 class="text-2xl font-bold text-slate-900 mb-6 text-center">Add a New Book</h2>
-
-        {% if message %}
-          <div class="mb-6 bg-emerald-100 border-l-4 border-emerald-500 text-emerald-800 p-4 rounded shadow-sm" role="alert">
-            <p>{{ message }}</p>
-          </div>
-        {% endif %}
-
-        <form action="/add_book" method="POST" class="space-y-5">
-
-          <div>
-            <label for="title" class="block text-sm font-medium text-slate-700 mb-1">Book Title:</label>
-            <input type="text" id="title" name="title" required
-                   class="w-full border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
-          </div>
-
-          <div>
-            <label for="isbn" class="block text-sm font-medium text-slate-700 mb-1">ISBN (up to 13 characters):</label>
-            <input type="text" id="isbn" name="isbn" required
-                   class="w-full border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
-          </div>
-
-          <div>
-            <label for="publication_year" class="block text-sm font-medium text-slate-700 mb-1">Publication Year:</label>
-            <input type="number" id="publication_year" name="publication_year"
-                   class="w-full border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
-          </div>
-
-          <div>
-            <label for="author_id" class="block text-sm font-medium text-slate-700 mb-1">Author:</label>
-            <select id="author_id" name="author_id" required
-                    class="w-full border border-slate-300 rounded-md px-4 py-2 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all cursor-pointer">
-              <option value="" disabled selected>Select an author...</option>
-              {% for author in authors %}
-                <option value="{{ author.id }}">{{ author.name }}</option>
-              {% endfor %}
-            </select>
-          </div>
-
-          <div class="pt-2">
-            <button type="submit"
-                    class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 px-4 rounded-md transition-colors shadow-sm">
-              Add Book
-            </button>
-          </div>
-
-        </form>
-
+      <div>
+        <label for="title" class="block text-sm font-medium text-slate-700 mb-1">Book Title:</label>
+        <input type="text" id="title" name="title" required
+               class="w-full border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
       </div>
-    </main>
 
-  </body>
-</html>
+      <div>
+        <label for="isbn" class="block text-sm font-medium text-slate-700 mb-1">ISBN (up to 13 characters):</label>
+        <input type="text" id="isbn" name="isbn" required
+               class="w-full border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
+      </div>
+
+      <div>
+        <label for="publication_year" class="block text-sm font-medium text-slate-700 mb-1">Publication Year:</label>
+        <input type="number" id="publication_year" name="publication_year"
+               class="w-full border border-slate-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
+      </div>
+
+      <div>
+        <label for="author_id" class="block text-sm font-medium text-slate-700 mb-1">Author:</label>
+        <select id="author_id" name="author_id" required
+                class="w-full border border-slate-300 rounded-md px-4 py-2 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all cursor-pointer">
+          <option value="" disabled selected>Select an author...</option>
+          {% for author in authors %}
+            <option value="{{ author.id }}">{{ author.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="pt-2">
+        <button type="submit"
+                class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 px-4 rounded-md transition-colors shadow-sm">
+          Add Book
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</main>
+
+{% endblock %}

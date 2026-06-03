@@ -1,57 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ author.name }} - Author Details</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
+{% extends "base.html" %}
 
-    <nav class="bg-indigo-600 text-white shadow-md">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-        <h1 class="text-2xl font-bold tracking-tight">📚 My Digital Library</h1>
-        <a href="/" class="bg-indigo-500 hover:bg-indigo-400 px-4 py-2 rounded transition-colors text-sm font-medium">← Back to Library</a>
-      </div>
-    </nav>
+{% block title %}Add a Book{% endblock %}
 
-    <main class="max-w-4xl mx-auto px-4 py-12 w-full">
+{% block content %}
 
-      <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 mb-8 flex justify-between items-start">
-        <div>
-            <h2 class="text-3xl font-bold text-slate-900 mb-4">{{ author.name }}</h2>
-            <div class="text-slate-600 space-y-1">
-                <p><strong>Born:</strong> {{ author.birth_date.strftime('%B %d, %Y') if author.birth_date else 'Unknown' }}</p>
-                <p><strong>Died:</strong> {{ author.date_of_death.strftime('%B %d, %Y') if author.date_of_death else 'Present' }}</p>
-            </div>
+<main class="max-w-4xl mx-auto px-4 py-12 w-full">
+
+  <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 mb-8 flex justify-between items-start">
+    <div>
+        <h2 class="text-3xl font-bold text-slate-900 mb-4">{{ author.name }}</h2>
+        <div class="text-slate-600 space-y-1">
+            <p><strong>Born:</strong> {{ author.birth_date.strftime('%B %d, %Y') if author.birth_date else 'Unknown' }}</p>
+            <p><strong>Died:</strong> {{ author.date_of_death.strftime('%B %d, %Y') if author.date_of_death else 'Present' }}</p>
         </div>
+    </div>
 
-        <form action="/author/{{ author.id }}/delete" method="POST">
-            <button type="submit"
-                    class="text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-4 py-2 rounded transition-colors"
-                    onclick="return confirm('WARNING: This will permanently delete {{ author.name }} AND ALL of their books. Proceed?');">
-              Delete Author
-            </button>
-        </form>
-      </div>
+    <form action="/author/{{ author.id }}/delete" method="POST">
+        <button type="submit"
+                class="text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-4 py-2 rounded transition-colors"
+                onclick="return confirm('WARNING: This will permanently delete {{ author.name }} AND ALL of their books. Proceed?');">
+          Delete Author
+        </button>
+    </form>
+  </div>
 
-      <h3 class="text-xl font-bold text-slate-800 mb-4 border-b border-slate-300 pb-2">Books in your Library ({{ author.books|length }})</h3>
+  <h3 class="text-xl font-bold text-slate-800 mb-4 border-b border-slate-300 pb-2">Books in your Library ({{ author.books|length }})</h3>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {% for book in author.books %}
-        <a href="/book/{{ book.id }}" class="block bg-white p-4 rounded-lg shadow-sm border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all flex gap-4 items-center">
-            <img src="https://covers.openlibrary.org/b/isbn/{{ book.isbn }}-S.jpg" alt="Cover" class="w-12 h-16 object-cover rounded shadow-sm">
-            <div>
-                <h4 class="font-bold text-slate-900">{{ book.title }}</h4>
-                <p class="text-sm text-slate-500">{{ book.publication_year if book.publication_year else '' }}</p>
-            </div>
-        </a>
-        {% else %}
-            <p class="text-slate-500 italic">No books found for this author.</p>
-        {% endfor %}
-      </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {% for book in author.books %}
+    <a href="/book/{{ book.id }}" class="block bg-white p-4 rounded-lg shadow-sm border border-slate-200 hover:-translate-y-1 hover:shadow-md transition-all flex gap-4 items-center">
+        <img src="https://covers.openlibrary.org/b/isbn/{{ book.isbn }}-S.jpg" alt="Cover" class="w-12 h-16 object-cover rounded shadow-sm">
+        <div>
+            <h4 class="font-bold text-slate-900">{{ book.title }}</h4>
+            <p class="text-sm text-slate-500">{{ book.publication_year if book.publication_year else '' }}</p>
+        </div>
+    </a>
+    {% else %}
+        <p class="text-slate-500 italic">No books found for this author.</p>
+    {% endfor %}
+  </div>
 
-    </main>
+</main>
 
-  </body>
-</html>
+{% endblock %}
