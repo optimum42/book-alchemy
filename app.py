@@ -11,3 +11,7 @@ app.config[
 
 db.init_app(app)
 
+
+# Only run once on empty database
+# with app.app_context():
+#   db.create_all()
