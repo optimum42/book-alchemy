@@ -157,6 +157,20 @@ def delete_author(author_id):
     return redirect(url_for('home'))
 
 
+@app.route('/book/<int:book_id>')
+def book_detail(book_id):
+    # Fetch the specific book or return a 404 Not Found error
+    book = Book.query.get_or_404(book_id)
+    return render_template('book_detail.html', book=book)
+
+
+@app.route('/author/<int:author_id>')
+def author_detail(author_id):
+    # Fetch the specific author or return a 404 Not Found error
+    author = Author.query.get_or_404(author_id)
+    return render_template('author_detail.html', author=author)
+
+
 # Only run once on empty database
 # with app.app_context():
 #   db.create_all()
