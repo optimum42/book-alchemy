@@ -1,7 +1,7 @@
 import os
 from flask import Flask, request, render_template
+from sqlalchemy import or_
 from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
 from data_models import db, Author, Book
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -82,19 +82,28 @@ def add_book():
 
 @app.route('/')
 def home():
-    # request.args gets parameters from the URL (e.g., ?sort=title)
+    search_query = request.args.get('search')
     sort_by = request.args.get('sort')
 
+    # base query by joining the author
+    query = Book.query.join(Author)
+
+    # search filter (title OR author)
+    if search_query:
+        search_term = f"%{search_query}%"
+        query = query.filter(or_(
+            Book.title.ilike(search_term),
+            Author.name.ilike(search_term)
+        ))
+
+    # sorting filter
     if sort_by == 'title':
-        # Sort alphabetically by book title
-        books = Book.query.order_by(Book.title).all()
-
+        query = query.order_by(Book.title)
     elif sort_by == 'author':
-        # Join the Author table ,then sort by author name
-        books = Book.query.join(Author).order_by(Author.name).all()
+        query = query.order_by(Author.name)
 
-    else:
-        books = Book.query.all()
+    # execute the query
+    books = query.all()
 
     return render_template('home.html', books=books)
 

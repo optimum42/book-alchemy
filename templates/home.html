@@ -10,29 +10,48 @@
 
     <h2>Library Catalog</h2>
 
-    <form action="/" method="GET" style="margin-bottom: 30px;">
-      <label for="sort"><strong>Sort by:</strong></label>
-      <select name="sort" id="sort">
-        <option value="title" {% if request.args.get('sort') == 'title' %}selected{% endif %}>Book Title</option>
-        <option value="author" {% if request.args.get('sort') == 'author' %}selected{% endif %}>Author Name</option>
-      </select>
-      <button type="submit">Apply Sort</button>
+    <form action="/" method="GET" style="margin-bottom: 30px; display: flex; gap: 15px; align-items: center;">
+
+      <div>
+        <label for="search"><strong>Search Title or Author:</strong></label>
+        <input type="text" name="search" id="search" placeholder="Enter keyword..."
+               value="{{ request.args.get('search', '') }}">
+      </div>
+
+      <div>
+        <label for="sort"><strong>Sort by:</strong></label>
+        <select name="sort" id="sort">
+          <option value="title" {% if request.args.get('sort') == 'title' %}selected{% endif %}>Book Title</option>
+          <option value="author" {% if request.args.get('sort') == 'author' %}selected{% endif %}>Author Name</option>
+        </select>
+      </div>
+
+      <button type="submit">Search & Sort</button>
+
+      {% if request.args.get('search') or request.args.get('sort') %}
+        <a href="/">Clear All</a>
+      {% endif %}
+
     </form>
     {% for book in books %}
     <div style="display: flex; align-items: flex-start; margin-bottom: 20px;">
-
       <img src="https://covers.openlibrary.org/b/isbn/{{ book.isbn }}-M.jpg"
            alt="Cover of {{ book.title }}"
            style="width: 100px; margin-right: 15px; border: 1px solid #ccc;">
-
       <div>
         <h3 style="margin: 0;">{{ book.title }}</h3>
         <p style="margin-top: 5px;"><strong>By:</strong> {{ book.author.name }}</p>
       </div>
-
     </div>
+
     {% else %}
-      <p>Your library is currently empty. Go add some books!</p>
+
+      {% if request.args.get('search') %}
+        <p>No books found matching "<strong>{{ request.args.get('search') }}</strong>". Try a different keyword!</p>
+      {% else %}
+        <p>Your library is currently empty. Go add some books!</p>
+      {% endif %}
+
     {% endfor %}
 
   </body>
