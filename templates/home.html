@@ -10,14 +10,23 @@
 
     <h2>Library Catalog</h2>
 
-    <form action="/" method="GET" style="margin-bottom: 30px; display: flex; gap: 15px; align-items: center;">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div style="background-color: #d4edda; color: #155724; padding: 10px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
+          {% for message in messages %}
+            <p style="margin: 0;">{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
 
+
+    <form action="/" method="GET" style="margin-bottom: 30px; display: flex; gap: 15px; align-items: center;">
       <div>
         <label for="search"><strong>Search Title or Author:</strong></label>
         <input type="text" name="search" id="search" placeholder="Enter keyword..."
                value="{{ request.args.get('search', '') }}">
       </div>
-
       <div>
         <label for="sort"><strong>Sort by:</strong></label>
         <select name="sort" id="sort">
@@ -25,33 +34,41 @@
           <option value="author" {% if request.args.get('sort') == 'author' %}selected{% endif %}>Author Name</option>
         </select>
       </div>
-
       <button type="submit">Search & Sort</button>
-
       {% if request.args.get('search') or request.args.get('sort') %}
         <a href="/">Clear All</a>
       {% endif %}
-
     </form>
+
+
     {% for book in books %}
     <div style="display: flex; align-items: flex-start; margin-bottom: 20px;">
+
       <img src="https://covers.openlibrary.org/b/isbn/{{ book.isbn }}-M.jpg"
            alt="Cover of {{ book.title }}"
            style="width: 100px; margin-right: 15px; border: 1px solid #ccc;">
+
       <div>
         <h3 style="margin: 0;">{{ book.title }}</h3>
-        <p style="margin-top: 5px;"><strong>By:</strong> {{ book.author.name }}</p>
+        <p style="margin-top: 5px; margin-bottom: 10px;"><strong>By:</strong> {{ book.author.name }}</p>
+
+        <form action="/book/{{ book.id }}/delete" method="POST">
+          <button type="submit"
+                  style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer;"
+                  onclick="return confirm('Are you sure you want to delete this book?');">
+            Delete Book
+          </button>
+        </form>
+
       </div>
     </div>
 
     {% else %}
-
       {% if request.args.get('search') %}
         <p>No books found matching "<strong>{{ request.args.get('search') }}</strong>". Try a different keyword!</p>
       {% else %}
         <p>Your library is currently empty. Go add some books!</p>
       {% endif %}
-
     {% endfor %}
 
   </body>

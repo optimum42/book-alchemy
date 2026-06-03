@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for, flash
 from sqlalchemy import or_
 from datetime import datetime
 from data_models import db, Author, Book
@@ -7,6 +7,10 @@ from data_models import db, Author, Book
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
+
+# Flask needs a secret key to securely sign the session cookie used for flash messages.
+app.secret_key = 'super_secret_library_key'
+
 app.config[
     'SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'data/library.sqlite')}"
 
@@ -106,6 +110,33 @@ def home():
     books = query.all()
 
     return render_template('home.html', books=books)
+
+
+@app.route('/book/<int:book_id>/delete', methods=['POST'])
+def delete_book(book_id):
+    # 1. Get the book by its ID. (get_or_404 safely handles invalid IDs)
+    book = Book.query.get_or_404(book_id)
+
+    book_title = book.title
+    author = book.author
+
+    # delete the book and commit the change
+    db.session.delete(book)
+    db.session.commit()
+
+    # check if the author has any other books left in the database
+    remaining_books_count = Book.query.filter_by(author_id=author.id).count()
+
+    if remaining_books_count == 0:
+        # delete the author too!
+        db.session.delete(author)
+        db.session.commit()
+        flash(f"Success! '{book_title}' was deleted. Because they had no "
+              f"other books, author '{author.name}' was also removed.")
+    else:
+        flash(f"Success! The book '{book_title}' was deleted.")
+
+    return redirect(url_for('home'))
 
 
 # Only run once on empty database
