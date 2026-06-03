@@ -82,10 +82,20 @@ def add_book():
 
 @app.route('/')
 def home():
-    # Alle Bücher aus der Datenbank abfragen
-    books = Book.query.all()
+    # request.args gets parameters from the URL (e.g., ?sort=title)
+    sort_by = request.args.get('sort')
 
-    # Das Template rendern und die Liste der Bücher übergeben
+    if sort_by == 'title':
+        # Sort alphabetically by book title
+        books = Book.query.order_by(Book.title).all()
+
+    elif sort_by == 'author':
+        # Join the Author table ,then sort by author name
+        books = Book.query.join(Author).order_by(Author.name).all()
+
+    else:
+        books = Book.query.all()
+
     return render_template('home.html', books=books)
 
 

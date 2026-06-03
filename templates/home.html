@@ -10,6 +10,14 @@
 
     <h2>Library Catalog</h2>
 
+    <form action="/" method="GET" style="margin-bottom: 30px;">
+      <label for="sort"><strong>Sort by:</strong></label>
+      <select name="sort" id="sort">
+        <option value="title" {% if request.args.get('sort') == 'title' %}selected{% endif %}>Book Title</option>
+        <option value="author" {% if request.args.get('sort') == 'author' %}selected{% endif %}>Author Name</option>
+      </select>
+      <button type="submit">Apply Sort</button>
+    </form>
     {% for book in books %}
     <div style="display: flex; align-items: flex-start; margin-bottom: 20px;">
 
@@ -19,7 +27,6 @@
 
       <div>
         <h3 style="margin: 0;">{{ book.title }}</h3>
-
         <p style="margin-top: 5px;"><strong>By:</strong> {{ book.author.name }}</p>
       </div>
 
