@@ -8,7 +8,7 @@ class Author(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(150), nullable=False)
-    birth_date = db.Column(db.Date, nullable=True)
+    birth_date = db.Column(db.Date, nullable=True) # Homer's birthday is unknown
     date_of_death = db.Column(db.Date, nullable=True)
 
     def __repr__(self):

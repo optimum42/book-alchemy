@@ -4,12 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My Library</title>
   </head>
   <body>
 
+    <h2>Library Catalog</h2>
+
     {% for book in books %}
-    <div> <h3>{{ book.title }}</h3>
+    <div style="display: flex; align-items: flex-start; margin-bottom: 20px;">
+
+      <img src="https://covers.openlibrary.org/b/isbn/{{ book.isbn }}-M.jpg"
+           alt="Cover of {{ book.title }}"
+           style="width: 100px; margin-right: 15px; border: 1px solid #ccc;">
+
+      <div>
+        <h3 style="margin: 0;">{{ book.title }}</h3>
+
+        <p style="margin-top: 5px;"><strong>By:</strong> {{ book.author.name }}</p>
+      </div>
+
     </div>
+    {% else %}
+      <p>Your library is currently empty. Go add some books!</p>
     {% endfor %}
 
   </body>
