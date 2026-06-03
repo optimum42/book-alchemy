@@ -114,7 +114,7 @@ def home():
 
 @app.route('/book/<int:book_id>/delete', methods=['POST'])
 def delete_book(book_id):
-    # 1. Get the book by its ID. (get_or_404 safely handles invalid IDs)
+    # get the book by its ID or return 404/405
     book = Book.query.get_or_404(book_id)
 
     book_title = book.title
@@ -136,6 +136,24 @@ def delete_book(book_id):
     else:
         flash(f"Success! The book '{book_title}' was deleted.")
 
+    return redirect(url_for('home'))
+
+
+@app.route('/author/<int:author_id>/delete', methods=['POST'])
+def delete_author(author_id):
+    # get the author by its ID or return 404/405
+    author = Author.query.get_or_404(author_id)
+    author_name = author.name
+
+    # delete ALL books associated with this author first
+    Book.query.filter_by(author_id=author_id).delete()
+
+    # now delete the author itself
+    db.session.delete(author)
+    db.session.commit()
+
+    flash(f"Success! Author '{author_name}' and all of their books "
+          f"have been deleted from your library.")
     return redirect(url_for('home'))
 
 
